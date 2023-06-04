@@ -1,5 +1,3 @@
-import os
-
 from aws_cdk import (
     Aws,
     Duration,
@@ -71,7 +69,7 @@ class NodejsService(Stack):
             logging=aws_ecs.LogDriver.aws_logs(
                 stream_prefix="/nodejs-container", log_group=log_group
             ),
-            environment={"REGION": os.getenv("AWS_DEFAULT_REGION")},
+            environment={"REGION": Aws.REGION},
             container_name="nodejs-app",
         )
 
@@ -153,7 +151,7 @@ class NodejsService(Stack):
             container_name="envoy",
             memory_reservation_mib=128,
             environment={
-                "REGION": os.getenv("AWS_DEFAULT_REGION"),
+                "REGION": Aws.REGION,
                 "ENVOY_LOG_LEVEL": "trace",
                 "ENABLE_ENVOY_STATS_TAGS": "1",
                 # "ENABLE_ENVOY_XRAY_TRACING": "1",

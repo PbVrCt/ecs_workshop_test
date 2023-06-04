@@ -12,8 +12,6 @@ from aws_cdk import (
     aws_logs,
 )
 
-from os import getenv
-
 
 class CrystalService(Stack):
     @property
@@ -73,7 +71,7 @@ class CrystalService(Stack):
             logging=aws_ecs.LogDriver.aws_logs(
                 stream_prefix="/crystal-container", log_group=self.logGroup
             ),
-            environment={"REGION": getenv("AWS_DEFAULT_REGION")},
+            environment={"REGION": Aws.REGION},
             container_name="crystal-app",
         )
 
@@ -149,6 +147,7 @@ class CrystalService(Stack):
             container_name="envoy",
             memory_reservation_mib=128,
             environment={
+                "REGION": Aws.REGION,
                 "ENVOY_LOG_LEVEL": "debug",
                 "ENABLE_ENVOY_STATS_TAGS": "1",
                 # "ENABLE_ENVOY_XRAY_TRACING": "1",

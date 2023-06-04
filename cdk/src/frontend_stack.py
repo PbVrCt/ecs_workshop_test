@@ -1,4 +1,3 @@
-import os
 import aws_cdk as cdk
 from aws_cdk import (
     Aws,
@@ -34,7 +33,7 @@ class FrontendService(Stack):
             environment={
                 "CRYSTAL_URL": "http://ecsdemo-crystal.service.local:3000/crystal",
                 "NODEJS_URL": "http://ecsdemo-nodejs.service.local:3000",
-                "REGION": os.getenv("AWS_DEFAULT_REGION"),
+                "REGION": Aws.REGION,
             },
         )
 
@@ -182,7 +181,7 @@ class FrontendServiceMesh(Stack):
             environment={
                 "CRYSTAL_URL": "http://ecsdemo-crystal.service.local:3000/crystal",
                 "NODEJS_URL": "http://ecsdemo-nodejs.service.local:3000",
-                "REGION": os.getenv("AWS_DEFAULT_REGION"),
+                "REGION": Aws.REGION,
             },
             container_name="frontend-app",
         )
@@ -231,7 +230,7 @@ class FrontendServiceMesh(Stack):
             container_name="envoy",
             memory_reservation_mib=128,
             environment={
-                "REGION": os.getenv("AWS_DEFAULT_REGION"),
+                "REGION": Aws.REGION,
                 "ENVOY_LOG_LEVEL": "critical",
                 "ENABLE_ENVOY_STATS_TAGS": "1",
                 # "ENABLE_ENVOY_XRAY_TRACING": "1",
