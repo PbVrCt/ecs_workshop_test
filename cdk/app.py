@@ -3,26 +3,41 @@ import os
 
 import aws_cdk as cdk
 
-from cdk.cdk_stack import CdkStack
-
+from src.platform_stack import BaseVPCStack
+from src.frontend_stack import FrontendService
+from src.nodejs_stack import NodejsService
+from src.crystal_stack import CrystalService
 
 app = cdk.App()
-CdkStack(app, "CdkStack",
-    # If you don't specify 'env', this stack will be environment-agnostic.
-    # Account/Region-dependent features and context lookups will not work,
-    # but a single synthesized template can be deployed anywhere.
 
-    # Uncomment the next line to specialize this stack for the AWS Account
-    # and Region that are implied by the current CLI configuration.
+_env = cdk.Environment(
+    account=os.getenv("AWS_ACCOUNT_ID"), region=os.getenv("AWS_DEFAULT_REGION")
+)
 
-    #env=cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'), region=os.getenv('CDK_DEFAULT_REGION')),
-
-    # Uncomment the next line if you know exactly what Account and Region you
-    # want to deploy the stack to. */
-
-    #env=cdk.Environment(account='123456789012', region='us-east-1'),
-
-    # For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
-    )
+base_platform = BaseVPCStack(app, "ecsworkshop-base", env=_env)
+nodejs_service = NodejsService(
+    app,
+    "ecsworkshop-nodejs",
+    base_platform.ecs_cluster,
+    base_platform.services_security_group,
+    base_platform.service_discovery_namespace,
+    env=_env,
+)
+crystal_service = CrystalService(
+    app,
+    "ecsworkshop-crystal",
+    base_platform.ecs_cluster,
+    base_platform.services_security_group,
+    base_platform.service_discovery_namespace,
+    env=_env,
+)
+FrontendService(
+    app,
+    "ecsworkshop-frontend",
+    base_platform.ecs_cluster,
+    base_platform.services_security_group,
+    base_platform.service_discovery_namespace,
+    env=_env,
+)
 
 app.synth()
