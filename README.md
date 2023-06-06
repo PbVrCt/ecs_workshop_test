@@ -39,7 +39,7 @@ git add .
 git commit -m "First commit"
 ```
 
-Geneterate https (or ssh) git credentials for codecommit in the was console
+Geneterate https (or ssh) git credentials for codecommit in the iam console
 
 ```
 git push --set-upstream origin main
